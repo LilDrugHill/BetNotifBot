@@ -13,17 +13,19 @@ TOPIC = 'fav'
 def main_f(email, psw):
     html = get_html_with_matches(LINK, email, psw)
 
-    new_ids = parse_html(html)
+    new_ids = set(parse_html(html))
 
     with open('games_id.json') as f:
-        old_ids = json.load(f)['games_id']
+        old_ids = set(json.load(f)['games_id'])
 
-    if not set(new_ids).issubset(old_ids):
-        alert = True
+    if not new_ids.issubset(old_ids):
+        new_matches = old_ids ^ new_ids
+        alert = True, new_matches
         with open('games_id.json', 'w') as f:
-            json.dump({'games_id': new_ids}, f)
+            json.dump({'games_id': list(new_ids)}, f)
     else:
-        alert = False
+        _ = 0
+        alert = False, _
     print(new_ids)
     print(old_ids)
     print(alert)
@@ -32,7 +34,7 @@ def main_f(email, psw):
 
 def get_html_with_matches(link, email, psw):
     options = webdriver.ChromeOptions()
-    options.add_argument('headless')
+    options.add_argument("--headless")
     options.add_argument('window-size=1920x935')
     driver = webdriver.Chrome(chrome_options=options)
     driver.get(url=link)
@@ -57,5 +59,5 @@ def parse_html(html):
     soup = BeautifulSoup(html, 'lxml')
     matches_block = soup.find_all('div', id=TOPIC)
     matches_list = matches_block[0].table
-    matches_notes = matches_list.find_all('tr', class_='a_link')
-    return [int((matches_note.get('game_id'))) for matches_note in matches_notes]
+    matches_notes = matches_list.find_all('td', class_='a_link hide')
+    return [matches_note.get('game_id') for matches_note in matches_notes[1:]]

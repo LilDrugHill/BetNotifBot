@@ -7,7 +7,7 @@ import time
 
 
 storage = MemoryStorage()
-TOKEN = '6149034262:AAGo_Smp-Z1SbP0Nco15qc_ulucaqHETTRU'
+TOKEN = '5897389295:AAGgjx51OtNn4oT0PoC63re8OnQWQ80m8aw'
 email = "timur.shurak@gmail.com"
 psw = "4xUs96YJ5d4vRHD"
 bot = Bot(token=TOKEN)
@@ -27,8 +27,10 @@ async def start(message: types.Message):
 async def start_checking(message: types.Message):
     await message.answer('Checking...', reply_markup=keyboard)
     while True:
-        if main_f(email, psw):
-            await message.answer('Notif')
+        f = main_f(email, psw)
+        if f[0]:
+            for i in f[1]:
+                await message.answer(f'https://www.excapper.com/?action=game&id={i}')
         time.sleep(5)
 
 
