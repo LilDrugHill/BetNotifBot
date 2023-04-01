@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import json
+import asyncio
 
 
 LINK = "https://www.excapper.com/"
@@ -10,10 +11,10 @@ LINK = "https://www.excapper.com/"
 TOPIC = 'fav'
 
 
-def main_f(email, psw):
-    html = get_html_with_matches(LINK, email, psw)
+async def main_f(email, psw):
+    html = await get_html_with_matches(LINK, email, psw)
 
-    new_ids = set(parse_html(html))
+    new_ids = set(await parse_html(html))
 
     with open('games_id.json') as f:
         old_ids = set(json.load(f)['games_id'])
@@ -32,7 +33,7 @@ def main_f(email, psw):
     return alert
 
 
-def get_html_with_matches(link, email, psw):
+async def get_html_with_matches(link, email, psw):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
@@ -49,7 +50,7 @@ def get_html_with_matches(link, email, psw):
 
     driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div/div[1]/form/input[2]").click()
 
-    time.sleep(2)
+    await asyncio.sleep(2)
 
     html = driver.page_source
 
@@ -58,7 +59,7 @@ def get_html_with_matches(link, email, psw):
     return html
 
 
-def parse_html(html):
+async def parse_html(html):
     soup = BeautifulSoup(html, 'lxml')
     matches_block = soup.find_all('div', id=TOPIC)
     matches_list = matches_block[0].table

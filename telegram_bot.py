@@ -1,3 +1,4 @@
+import asyncio
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram import Bot, Dispatcher, executor, types
@@ -13,26 +14,39 @@ psw = "4xUs96YJ5d4vRHD"
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 status = True
-control_buttons = ["Start"]
-keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard.add(*control_buttons)
+keyboard_start = types.ReplyKeyboardMarkup(resize_keyboard=True)
+keyboard_start.add(*['Start'])
+keyboard_stop = types.ReplyKeyboardMarkup(resize_keyboard=True)
+keyboard_stop.add(*['Stop'])
 
 
 @dp.message_handler(commands='start')
 async def start(message: types.Message):
-    await message.answer("Hello it's working....", reply_markup=keyboard)
+    await message.answer("Hello it's working....", reply_markup=keyboard_start)
 
 
 @dp.message_handler(Text(equals='Start'))
 async def start_checking(message: types.Message):
-    await message.answer('Checking...')
-    while True:
-        f = main_f(email, psw)
+    control_buttons = ["Stop"]
+    await message.answer('Checking...', reply_markup=keyboard_stop)
+    global status
+    status = True
+    while status:
+        f = await main_f(email, psw)
+        print(1)
         if f[0]:
             for i in f[1]:
                 await message.answer(f'https://www.excapper.com/?action=game&id={i}')
-        time.sleep(5)
+        await asyncio.sleep(5)
+
+
+@dp.message_handler(Text(equals='Stop'))
+async def stop(message: types.Message):
+    global status
+    status = False
+    print('Stopped')
+    await message.answer('its stopped', reply_markup=keyboard_start)
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    asyncio.run(executor.start_polling(dp))
