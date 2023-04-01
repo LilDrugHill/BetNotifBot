@@ -35,6 +35,9 @@ def main_f(email, psw):
 def get_html_with_matches(link, email, psw):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_experimental_option('detach', True)
+    options.add_argument("--disable-logging")
     options.add_argument('window-size=1920x935')
     driver = webdriver.Chrome(chrome_options=options)
     driver.get(url=link)

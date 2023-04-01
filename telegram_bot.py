@@ -13,7 +13,7 @@ psw = "4xUs96YJ5d4vRHD"
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 status = True
-control_buttons = ["Start", "Stop"]
+control_buttons = ["Start"]
 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard.add(*control_buttons)
 
@@ -25,7 +25,7 @@ async def start(message: types.Message):
 
 @dp.message_handler(Text(equals='Start'))
 async def start_checking(message: types.Message):
-    await message.answer('Checking...', reply_markup=keyboard)
+    await message.answer('Checking...')
     while True:
         f = main_f(email, psw)
         if f[0]:
