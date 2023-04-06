@@ -59,12 +59,4 @@ async def refresh_data_file():
         json.dump({"games_id": ["1"], "notified_id": ["1"]}, f)
 
 if __name__ == '__main__':
-    while True:
-        try:
-            asyncio.run(executor.start_polling(dp))
-        except Exception as e:
-            print(f"Error: {e}")
-            print("Restarting bot...")
-            time.sleep(5)
-            global restart
-            restart = True
+    asyncio.run(executor.start_polling(dp))
