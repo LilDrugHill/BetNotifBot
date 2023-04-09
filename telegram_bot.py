@@ -24,8 +24,6 @@ keyboard_stop.add(*['Stop'])
 @dp.message_handler(commands='start')
 async def start(message: types.Message):
     await message.answer("Hello it's working....", reply_markup=keyboard_start)
-    if restart is True:
-        await start_checking(message)
 
 
 @dp.message_handler(Text(equals='Start'))
@@ -33,7 +31,7 @@ async def start_checking(message: types.Message):
     await message.answer('Checking...', reply_markup=keyboard_stop)
     global status
     status = True
-    await refresh_data_file()
+    # await refresh_data_file()
     while status:
         try:
             f = await main_f(email, psw)
@@ -54,9 +52,9 @@ async def stop(message: types.Message):
     await message.answer('its stopped', reply_markup=keyboard_start)
 
 
-async def refresh_data_file():
-    with open("games_id.json", "w") as f:
-        json.dump({"games_id": ["1"], "notified_id": ["1"]}, f)
+# async def refresh_data_file():
+#     with open("games_id.json", "w") as f:
+#         json.dump({"games_id": ["1"], "notified_id": ["1"]}, f)
 
 if __name__ == '__main__':
     asyncio.run(executor.start_polling(dp))
