@@ -2,3 +2,4 @@
 .venv
 log_data
 geckodriver.log
+.idea
