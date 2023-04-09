@@ -1,17 +1,17 @@
 import asyncio
-import json
-
+import os
+import dotenv
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from main import main_f
-import time
 
 
 storage = MemoryStorage()
-TOKEN = '5897389295:AAGgjx51OtNn4oT0PoC63re8OnQWQ80m8aw'
-email = "timur.shurak@gmail.com"
-psw = "4xUs96YJ5d4vRHD"
+dotenv.load_dotenv()
+TOKEN = os.getenv("TOKEN")
+PASSWORD = os.getenv("PASSWORD")
+EMAIL = os.getenv("EMAIL")
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 status = True
@@ -34,7 +34,7 @@ async def start_checking(message: types.Message):
     # await refresh_data_file()
     while status:
         try:
-            f = await main_f(email, psw)
+            f = await main_f(EMAIL, PASSWORD)
         except Exception as ex:
             await message.answer(f'{ex}')
             await stop(message)
